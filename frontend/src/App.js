@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, Phone, Mail, Calendar, Heart, Users, MessageSquare, X, Activity } from 'lucide-react';
+import { Send, Bot,  Phone,  Calendar, Heart, Users, MessageSquare, X, Activity } from 'lucide-react';
 import axios from 'axios';
 
 const App = () => {
