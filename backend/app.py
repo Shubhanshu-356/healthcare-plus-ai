@@ -210,9 +210,16 @@ def get_summary():
         "status": "Healthy"
     })
 
+# ... (All your upper code stays the same) ...
+
 if __name__ == '__main__':
+    # Ensure data files exist (Cloud storage is temporary, but this prevents crashes)
     if not os.path.exists(PATIENT_DATA_FILE): save_data(PATIENT_DATA_FILE, [])
     if not os.path.exists(VOLUNTEER_DATA_FILE): save_data(VOLUNTEER_DATA_FILE, [])
     
     print("🏥 AI Healthcare Server Running...")
-    app.run(debug=True, port=5000)
+    
+    # ☁️ CLOUD FIX: Get the PORT from the cloud environment (Render gives this automatically)
+    port = int(os.environ.get('PORT', 5000))
+    # ☁️ CLOUD FIX: Bind to '0.0.0.0' so the cloud can see your app
+    app.run(host='0.0.0.0', port=port)
