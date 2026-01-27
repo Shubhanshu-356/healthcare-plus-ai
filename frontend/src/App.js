@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot,  Phone,  Calendar, Heart, Users, MessageSquare, X, Activity } from 'lucide-react';
+import { Send, Bot, Phone, Calendar, Heart, Users, MessageSquare, X, Activity } from 'lucide-react';
 import axios from 'axios';
+
+// 🟢 FINAL CONFIGURATION: Your Live Backend URL
+const RENDER_URL = "https://healthcare-plus-ai.onrender.com";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -11,7 +14,7 @@ const App = () => {
   ]);
   const [userInput, setUserInput] = useState('');
   const [chatOpen, setChatOpen] = useState(false);
-  const chatEndRef = useRef(null); // Auto-scroll to bottom of chat
+  const chatEndRef = useRef(null); 
 
   // Form State
   const [formData, setFormData] = useState({
@@ -21,7 +24,7 @@ const App = () => {
   // Notification State
   const [notification, setNotification] = useState({ show: false, message: '', type: '' });
 
-  // Scroll to bottom of chat when messages change
+  // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
@@ -40,8 +43,8 @@ const App = () => {
     setUserInput('');
 
     try {
-      // Send to Flask AI Backend
-      const response = await axios.post('http://localhost:5000/api/chatbot', {
+      // 🟢 CORRECTED: Points to Render URL + /api/chatbot
+      const response = await axios.post(`${RENDER_URL}/api/chatbot`, {
         query: query
       });
 
@@ -55,24 +58,21 @@ const App = () => {
   };
 
   // ==========================================
-  // 2. 🚀 SMART FORM SUBMISSION (With Auto-Triage)
+  // 2. 🚀 SMART FORM SUBMISSION
   // ==========================================
   const handleFormSubmit = async (formType) => {
+    // 🟢 CORRECTED: Points to Render URL instead of localhost
     let url = formType === 'Patient Support' 
-      ? 'http://localhost:5000/api/patient-support'
-      : 'http://localhost:5000/api/volunteer-registration';
+      ? `${RENDER_URL}/api/patient-support`
+      : `${RENDER_URL}/api/volunteer-registration`;
 
     try {
       const response = await axios.post(url, formData);
 
       if (response.data.success) {
-        // Check if Backend sent an Auto-Response (Innovation Feature)
         const successMsg = response.data.auto_response || "Form submitted successfully!";
         
-        // Show Notification
         setNotification({ show: true, message: successMsg, type: 'success' });
-        
-        // Hide after 6 seconds so they can read the AI analysis
         setTimeout(() => setNotification({ show: false, message: '', type: '' }), 6000);
 
         // Reset Form
